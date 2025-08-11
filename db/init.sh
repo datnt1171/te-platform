@@ -14,14 +14,14 @@ echo "host all all 0.0.0.0/0 md5" >> /var/lib/postgresql/data/pg_hba.conf
 sleep 2
 
 # Check if backup files exist and restore them
-if [ -f "/docker-entrypoint-initdb.d/task_management_backup.dump" ]; then
+if [ -f "/docker-entrypoint-initdb.d/backup/task_management.dump" ]; then
     echo "Found task_management_backup.dump, restoring to task_management database..."
-    pg_restore -U "$POSTGRES_USER" -d task_management --clean --if-exists /docker-entrypoint-initdb.d/task_management.dump
+    pg_restore -U "$POSTGRES_USER" -d task_management --clean --if-exists /docker-entrypoint-initdb.d/backup/task_management.dump
 fi
 
-if [ -f "/docker-entrypoint-initdb.d/sheet_management_backup.sql" ]; then
+if [ -f "/docker-entrypoint-initdb.d/backup/dw.sql" ]; then
     echo "Found sheet_management_backup.sql, restoring to sheet_management database..."
-    psql -U "$POSTGRES_USER" -d datawarehouse -f /docker-entrypoint-initdb.d/dw.sql
+    psql -U "$POSTGRES_USER" -d datawarehouse -f /docker-entrypoint-initdb.d/backup/dw.sql
 fi
 
 echo "Database initialization completed successfully!"
