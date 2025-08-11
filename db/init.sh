@@ -3,15 +3,25 @@ set -e
 
 # Create databases
 psql -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" -d "$POSTGRES_DB" <<-EOSQL
-    CREATE DATABASE sheet_management;
     CREATE DATABASE task_management;
-    CREATE DATABASE staging;
     CREATE DATABASE datawarehouse;
 EOSQL
 
-# Restore .sql files
-# psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname=sheet_management < /docker-entrypoint-initdb.d/backup/sheet_management_dump.sql
-psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname=task_management < /docker-entrypoint-initdb.d/backup/task_management.sql
-# psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname=staging < /docker-entrypoint-initdb.d/backup/staging_dump.sql
-# psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname=datawarehouse < /docker-entrypoint-initdb.d/backup/dwh_dump.sql
+# Update pg_hba.conf for external connections
 echo "host all all 0.0.0.0/0 md5" >> /var/lib/postgresql/data/pg_hba.conf
+
+# Wait a moment for databases to be fully created
+sleep 2
+
+# Check if backup files exist and restore them
+if [ -f "/docker-entrypoint-initdb.d/task_management_backup.dump" ]; then
+    echo "Found task_management_backup.dump, restoring to task_management database..."
+    pg_restore -U "$POSTGRES_USER" -d task_management --clean --if-exists /docker-entrypoint-initdb.d/task_management.dump
+fi
+
+if [ -f "/docker-entrypoint-initdb.d/sheet_management_backup.sql" ]; then
+    echo "Found sheet_management_backup.sql, restoring to sheet_management database..."
+    psql -U "$POSTGRES_USER" -d datawarehouse -f /docker-entrypoint-initdb.d/dw.sql
+fi
+
+echo "Database initialization completed successfully!"
