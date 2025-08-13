@@ -4,3 +4,6 @@
 [submodule "frontend"]
 	path = frontend
 	url = https://github.com/datnt1171/frontend_refactor.git
+[submodule "dw"]
+	path = dw
+	url = https://github.com/datnt1171/FastAPI_dw.git

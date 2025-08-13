@@ -15,6 +15,18 @@ services:
     networks:
       - cloudflared
 
+  dw:
+    build: ./dw
+    container_name: fastapi_dw
+    restart: unless-stopped
+    env_file:
+      - ./dw/.env
+    expose:
+      - 8001
+    depends_on:
+      - db
+    networks:
+      - cloudflared
   frontend:
     build: ./frontend
     container_name: frontend
