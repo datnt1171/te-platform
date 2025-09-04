@@ -19,9 +19,9 @@ if [ -f "/docker-entrypoint-initdb.d/backup/task_management.dump" ]; then
     pg_restore -U "$POSTGRES_USER" -d task_management --clean --if-exists /docker-entrypoint-initdb.d/backup/task_management.dump
 fi
 
-if [ -f "/docker-entrypoint-initdb.d/backup/dw.sql" ]; then
-    echo "Found sheet_management_backup.sql, restoring to sheet_management database..."
-    psql -U "$POSTGRES_USER" -d datawarehouse -f /docker-entrypoint-initdb.d/backup/dw.sql
+if [ -f "/docker-entrypoint-initdb.d/backup/datawarehouse.dump" ]; then
+    echo "Found datawarehouse.dump, restoring to datawarehouse database..."
+    psql -U "$POSTGRES_USER" -d datawarehouse -f /docker-entrypoint-initdb.d/backup/datawarehouse.dump
 fi
 
 echo "Database initialization completed successfully!"
