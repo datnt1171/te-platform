@@ -21,7 +21,7 @@ fi
 
 if [ -f "/docker-entrypoint-initdb.d/backup/datawarehouse.dump" ]; then
     echo "Found datawarehouse.dump, restoring to datawarehouse database..."
-    psql -U "$POSTGRES_USER" -d datawarehouse -f /docker-entrypoint-initdb.d/backup/datawarehouse.dump
+    pg_restore -U "$POSTGRES_USER" -d datawarehouse --clean --if-exists /docker-entrypoint-initdb.d/backup/datawarehouse.dump
 fi
 
 echo "Database initialization completed successfully!"
