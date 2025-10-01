@@ -63,6 +63,8 @@ services:
     image: postgres:15
     container_name: shared_postgres
     restart: always
+    ports:
+      - "5432:5432"
     env_file:
       - .env
     environment:
