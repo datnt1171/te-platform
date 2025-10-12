@@ -88,16 +88,6 @@ services:
     networks:
       - cloudflared
 
-  cloudflared_db:
-    image: cloudflare/cloudflared:latest
-    container_name: cloudflared-db
-    environment:
-      - TZ=Asia/Ho_Chi_Minh
-      - TUNNEL_TOKEN=${TUNNEL_TOKEN_DB}
-    command: tunnel --no-autoupdate run
-    networks:
-      - cloudflared
-
 volumes:
   media_volume:
   db_data:
