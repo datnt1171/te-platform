@@ -12,6 +12,31 @@ services:
       - 8000
     depends_on:
       - db
+      - redis
+    networks:
+      - cloudflared
+
+  celery_worker:
+    build: ./backend
+    container_name: celery_worker
+    restart: unless-stopped
+    command: celery -A task_management worker --loglevel=info
+    volumes:
+      - ./backend/media:/app/media
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - db
+      - redis
+    networks:
+      - cloudflared
+
+  redis:
+    image: redis:8.0-alpine
+    container_name: redis
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
     networks:
       - cloudflared
 
@@ -29,6 +54,7 @@ services:
       - db
     networks:
       - cloudflared
+
   frontend:
     build: ./frontend
     container_name: frontend
@@ -91,6 +117,7 @@ services:
 volumes:
   media_volume:
   db_data:
+  redis_data:
 
 networks:
   cloudflared:
