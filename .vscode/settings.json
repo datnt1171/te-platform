@@ -1,0 +1,31 @@
+{
+  // Python interpreter selection per folder
+  "python.defaultInterpreterPath": "${workspaceFolder}/backend/.venv/bin/python",
+  
+  // Allow VS Code to discover both virtual environments
+  "python.venvPath": "${workspaceFolder}",
+  "python.venvFolders": [
+    "${workspaceFolder}/backend/.venv",
+    "${workspaceFolder}/dw/.venv"
+  ],
+  
+  // Pylance settings for both projects
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}/backend",
+    "${workspaceFolder}/dw"
+  ],
+  
+  // Auto-activate venv in terminal
+  "python.terminal.activateEnvironment": true,
+  
+  // Exclude venv from search/file watching
+  "files.exclude": {
+    "**/.venv": true
+  },
+  "search.exclude": {
+    "**/.venv": true
+  },
+  "files.watcherExclude": {
+    "**/.venv/**": true
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "name": "Full Stack Development",
+  "dockerComposeFile": "../docker-compose.dev.yaml",
+  "service": "devcontainer",
+  "workspaceFolder": "/workspace",
+  
+  // Additional mounts to prevent permission conflicts
+  "mounts": [
+    "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached"
+  ],
+  
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // Python
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.black-formatter",
+        
+        // JavaScript/TypeScript
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
+        
+        // Docker
+        "ms-azuretools.vscode-docker",
+        
+        // Git
+        "eamodio.gitlens"
+      ],
+      "settings": {
+        // Python settings - use virtual environments
+        "python.defaultInterpreterPath": "${workspaceFolder}/backend/.venv/bin/python",
+        "python.terminal.activateEnvironment": true,
+        "python.analysis.extraPaths": [
+          "/workspace/backend",
+          "/workspace/dw"
+        ],
+        "[python]": {
+          "editor.formatOnSave": true
+        },
+        
+        // TypeScript/JavaScript settings
+        "typescript.tsdk": "/workspace/frontend/node_modules/typescript/lib",
+        "eslint.workingDirectories": [
+          "./frontend"
+        ],
+        "[typescript]": {
+          "editor.formatOnSave": true
+        },
+        "[typescriptreact]": {
+          "editor.formatOnSave": true
+        },
+        
+        // Editor settings
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "explicit"
+        }
+      }
+    }
+  },
+  
+  // Install dependencies in separate virtual environments to avoid conflicts
+  "postCreateCommand": "bash -c 'chmod -R 777 /workspace/frontend 2>/dev/null || true && cd /workspace/backend && python -m venv .venv && .venv/bin/pip install --upgrade pip && .venv/bin/pip install -r requirements.txt && cd /workspace/dw && python -m venv .venv && .venv/bin/pip install --upgrade pip && .venv/bin/pip install -r requirements.txt && cd /workspace/frontend && npm install'",
+  
+  // Use 'forwardPorts' to make a list of ports inside the container available locally
+  "forwardPorts": [3000, 8000, 8001, 8081, 5433, 6379],
+  
+  // Keep containers running after VS Code closes
+  "shutdownAction": "stopCompose"
+}
